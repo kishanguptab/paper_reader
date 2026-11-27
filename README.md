@@ -2,6 +2,8 @@
 
 **Understand research papers paragraph by paragraph, with every claim grounded in the text.**
 
+**[▶ Live demo](https://claude.ai/artifact/2vk4hGLfmV5UF42sSpbchk)**: 12 open-access papers (ACL Anthology, CC BY 4.0), three deep reads and the knowledge graph. The chat agent and defense examiner run live on the viewer's Claude session, with the agent's search and read tools running in the browser. **[Slides](https://claude.ai/artifact/BFCseLat39efQrbzb9Qwdp)**: a 12-slide walkthrough.
+
 PaperLens is a Claude-powered research agent for reading papers deeply and preparing to defend them. Drop in PDFs and it builds:
 
 - **A guided reader.** Every paragraph sits next to a plain-language explanation, its role in the argument (motivation, method, result, limitation…), key terms, and links to the paragraphs it depends on.
@@ -130,6 +132,8 @@ python -m paperlens ask "Which papers find compression amplifies bias?"
 python -m paperlens eval            # parser / verifier / retrieval / grounding evals (free)
 python -m paperlens cost
 ```
+
+Live demo build: `python -m paperlens.export_demo site/data.json <id>=<venue> ...` exports only the papers you name (only papers you may redistribute), then `VITE_DEMO=1 npx vite build` produces a backend-free site where the agent runs through the host page's Claude capability.
 
 Development: `cd backend && pytest` (no network: a scripted fake Claude drives the whole pipeline); `cd frontend && npm run dev` (Vite on :5173, proxied to the API on :8000).
 

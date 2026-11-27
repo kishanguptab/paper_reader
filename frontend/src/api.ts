@@ -78,7 +78,7 @@ async function j<T>(r: Response): Promise<T> {
 const post = (url: string, body: unknown) =>
   fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
 
-export const api = {
+const liveApi = {
   status: () => fetch("/api/status").then(j<{ has_key: boolean; spent: number; budget: number; papers_dir: string; models: Record<string, string> }>),
   papers: () => fetch("/api/papers").then(j<PaperSummary[]>),
   paper: (id: string) => fetch(`/api/papers/${id}`).then(j<PaperFull>),
@@ -92,5 +92,30 @@ export const api = {
   defenseQ: (paper_ids: string[], asked: string[], focus: string, difficulty: number) => post("/api/defense/question", { paper_ids, asked, focus, difficulty }).then(j<any>),
   defenseG: (paper_ids: string[], question: any, answer: string) => post("/api/defense/grade", { paper_ids, question, answer }).then(j<any>),
 };
+
+import { DEMO, demoData, demoSummaries, demoChat, demoQuestion, demoGrade } from "./demo";
+
+const off = () => Promise.reject(new Error("Not available in the live demo: clone the repo to run analyses on your own papers."));
+const demoApi: typeof liveApi = {
+  status: async () => ({ has_key: true, spent: 0, budget: 0, papers_dir: "", models: {} }),
+  papers: demoSummaries,
+  paper: async (id) => {
+    const p = (await demoData()).papers.find((x) => x.id === id);
+    if (!p) throw new Error("Paper not found");
+    return p;
+  },
+  analyze: off as any,
+  analyzeAll: off as any,
+  rescan: off as any,
+  upload: off as any,
+  graph: async () => (await demoData()).graph,
+  chat: (q, h, f) => demoChat(q, h, f ?? {}),
+  cost: async () => ({ total: 0, by_purpose: [] }),
+  defenseQ: demoQuestion,
+  defenseG: demoGrade,
+};
+
+export const api = DEMO ? demoApi : liveApi;
+export { DEMO };
 
 export const pdfUrl = (id: string, page?: number) => `/api/papers/${id}/pdf${page ? `#page=${page}` : ""}`;

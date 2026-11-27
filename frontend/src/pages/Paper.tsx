@@ -1,18 +1,18 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import ForceGraph2D from "react-force-graph-2d";
-import { api, Card, Explanation, PaperFull, Paragraph, pdfUrl, Thread } from "../api";
+import { api, Card, DEMO, Explanation, PaperFull, Paragraph, pdfUrl, Thread } from "../api";
 import { useApp } from "../App";
 import { Evidence, GroundBadge } from "../components/Evidence";
 import { useSpreadGraph } from "../components/useSpreadGraph";
 
-const TABS = [
+const TABS = ([
   ["overview", "Overview"],
   ["read", "Read paragraph by paragraph"],
   ["threads", "Threads"],
   ["graph", "Concept map"],
   ["pdf", "PDF"],
-] as const;
+] as const).filter(([k]) => !(DEMO && k === "pdf"));
 
 export default function PaperPage() {
   const { id = "" } = useParams();
@@ -65,7 +65,9 @@ export default function PaperPage() {
           )}
         </div>
         <div className="actions">
-          {running ? (
+          {DEMO ? (
+            (paper as any).venue && <div className="verif"><strong style={{ fontSize: 13 }}>{(paper as any).venue}</strong><div className="small">CC BY 4.0 · text shown with attribution</div></div>
+          ) : running ? (
             <div className="progress"><span className="spinner" /> {paper.progress || "working…"}</div>
           ) : (
             <>
@@ -89,7 +91,7 @@ export default function PaperPage() {
       </div>
 
       {tab === "overview" && (paper.card ? <Overview card={paper.card} goto={goto} /> : <Empty what="paper card" onRun={() => start(["card", "graph"])} running={running} />)}
-      {tab === "read" && <Reader paper={paper} target={target} onRun={() => start(["paragraphs"])} running={running} />}
+      {tab === "read" && <Reader paper={paper} target={target} onRun={() => start(["paragraphs"])} running={running} goto={goto} />}
       {tab === "threads" && (paper.threads ? <Threads threads={paper.threads.threads} paper={paper} goto={goto} /> : <Empty what="threads" onRun={() => start(paper.card ? ["threads"] : ["card", "threads"])} running={running} />)}
       {tab === "graph" && (paper.graph ? <PaperGraph g={paper.graph} goto={goto} /> : <Empty what="concept map" onRun={() => start(["graph"])} running={running} />)}
       {tab === "pdf" && <iframe className="pdf" src={pdfUrl(id, Number(sp.get("page")) || undefined)} title="PDF" />}
@@ -108,6 +110,13 @@ function Verification({ v }: { v: NonNullable<Card["verification"]> }) {
 }
 
 function Empty({ what, onRun, running }: { what: string; onRun: () => void; running: boolean }) {
+  if (DEMO)
+    return (
+      <div className="empty">
+        <p>The demo includes {what} for the three deep-read papers (StereoSet, CrowS-Pairs, Intrinsic Bias Metrics).</p>
+        <p className="small">Every paper gets a card and concept map; clone the repo to run deep reads on your own papers.</p>
+      </div>
+    );
   return (
     <div className="empty">
       <p>No {what} yet.</p>
@@ -238,7 +247,7 @@ const ROLE_COLORS: Record<string, string> = {
   limitation: "#dc2626", "future-work": "#d97706", "figure/table": "#78716c", other: "#a8a29e",
 };
 
-function Reader({ paper, target, onRun, running }: { paper: PaperFull; target: string | null; onRun: () => void; running: boolean }) {
+function Reader({ paper, target, onRun, running, goto }: { paper: PaperFull; target: string | null; onRun: () => void; running: boolean; goto: (pid: string) => void }) {
   const { setFocus } = useApp();
   const ex = useMemo(() => Object.fromEntries((paper.explanations?.paragraphs ?? []).map((e) => [e.pid, e])), [paper.explanations]);
   const [roleFilter, setRoleFilter] = useState<string>("");
@@ -260,7 +269,8 @@ function Reader({ paper, target, onRun, running }: { paper: PaperFull; target: s
     <div className="reader">
       <div className="reader-bar">
         <span className="muted">{nExplained ? `${nExplained} paragraphs explained` : "Paragraph explanations not generated yet."}</span>
-        {!nExplained && <button className="btn primary small" disabled={running} onClick={onRun}>{running ? "Working…" : "Explain every paragraph"}</button>}
+        {!nExplained && !DEMO && <button className="btn primary small" disabled={running} onClick={onRun}>{running ? "Working…" : "Explain every paragraph"}</button>}
+        {!nExplained && DEMO && <span className="small muted">Paragraph explanations are in the demo for StereoSet, CrowS-Pairs and Intrinsic Bias Metrics.</span>}
         {roles.length > 0 && (
           <div className="role-filter">
             <button className={!roleFilter ? "on" : ""} onClick={() => setRoleFilter("")}>all</button>
@@ -283,7 +293,7 @@ function Reader({ paper, target, onRun, running }: { paper: PaperFull; target: s
             onClick={() => { setActive(p.pid); setFocus({ paper_id: paper.id, pid: p.pid }); }}
           >
             <div className="orig">
-              <div className="meta"><a href={`?tab=pdf&page=${p.page}`}>{p.pid} · p.{p.page}</a>{e && <span className="role" style={{ background: ROLE_COLORS[e.role] }}>{e.role}</span>}</div>
+              <div className="meta"><a href={DEMO ? undefined : `?tab=pdf&page=${p.page}`}>{p.pid} · p.{p.page}</a>{e && <span className="role" style={{ background: ROLE_COLORS[e.role] }}>{e.role}</span>}</div>
               <p>{p.text}</p>
             </div>
             <div className="expl">
@@ -293,7 +303,7 @@ function Reader({ paper, target, onRun, running }: { paper: PaperFull; target: s
                   {e.why_it_matters && <p className="why"><strong>Why it matters:</strong> {e.why_it_matters}</p>}
                   <div className="chips">
                     {e.links.map((l) => <span key={l} className="tag ghost">{l}</span>)}
-                    {e.depends_on.map((d) => <a key={d} className="tag dep" href={`?tab=read&p=${d}`} onClick={(ev) => ev.stopPropagation()}>needs {d}</a>)}
+                    {e.depends_on.map((d) => <a key={d} className="tag dep" onClick={(ev) => { ev.stopPropagation(); goto(d); }}>needs {d}</a>)}
                     {e.key_terms.map((t) => <span key={t} className="term">{t}</span>)}
                     <span className="diff" title="difficulty">{"●".repeat(e.difficulty)}{"○".repeat(5 - e.difficulty)}</span>
                   </div>

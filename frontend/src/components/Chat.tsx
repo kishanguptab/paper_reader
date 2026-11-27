@@ -1,18 +1,26 @@
 import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { api, ChatResult } from "../api";
+import { api, ChatResult, DEMO } from "../api";
+import { getSample } from "../demo";
 import { useApp } from "../App";
 import { linkCitations } from "./Evidence";
 
 type Msg = { role: "user" | "assistant"; content: string; meta?: ChatResult };
 
-const STARTERS = [
-  "Compare how the papers measure bias in compressed models. Which metrics do they share?",
-  "Which papers find that compression amplifies bias, and which find it reduces bias?",
-  "What are the most common limitations across the quantization papers?",
-  "Do intrinsic bias metrics predict downstream bias? What's the evidence?",
-];
+const STARTERS = DEMO
+  ? [
+      "Do intrinsic bias metrics predict downstream bias? What's the evidence?",
+      "What problems do the papers find with StereoSet and CrowS-Pairs as benchmarks?",
+      "Compare how StereoSet, CrowS-Pairs and BBQ measure bias.",
+      "Did any of these papers test bias in quantized Llama 4 models?",
+    ]
+  : [
+      "Compare how the papers measure bias in compressed models. Which metrics do they share?",
+      "Which papers find that compression amplifies bias, and which find it reduces bias?",
+      "What are the most common limitations across the quantization papers?",
+      "Do intrinsic bias metrics predict downstream bias? What's the evidence?",
+    ];
 
 export default function Chat() {
   const { focus, openCitation, titleOf, setFocus } = useApp();
@@ -21,6 +29,10 @@ export default function Chat() {
   const [q, setQ] = useState("");
   const [busy, setBusy] = useState(false);
   const end = useRef<HTMLDivElement>(null);
+  const [live, setLive] = useState<boolean | null>(DEMO ? null : true);
+  useEffect(() => {
+    if (DEMO) getSample().then((s) => setLive(!!s));
+  }, []);
   useEffect(() => {
     end.current?.scrollIntoView({ behavior: "smooth" }); // braces: newer browsers return a Promise here, which React would treat as cleanup
   }, [msgs, busy]);
@@ -54,7 +66,13 @@ export default function Chat() {
         )}
       </div>
       <div className="chat-body">
-        {msgs.length === 0 && (
+        {live === false && (
+          <div className="demo-note">
+            Chat runs on the viewer's own Claude session, and none is available in this view. Open this page on claude.ai while signed in to
+            ask questions; everything else on the page works without it.
+          </div>
+        )}
+        {msgs.length === 0 && live !== false && (
           <div className="starters">
             <p className="muted small">Answers come only from your library, with every sentence cited to a paragraph. Claims that can't be grounded are flagged.</p>
             {STARTERS.map((s) => <button key={s} onClick={() => send(s)}>{s}</button>)}
@@ -98,7 +116,7 @@ export default function Chat() {
       <form className="chat-in" onSubmit={(e) => { e.preventDefault(); send(q); }}>
         <textarea value={q} placeholder="Ask about a paper, compare papers, or check a claim…" onChange={(e) => setQ(e.target.value)}
           onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(q); } }} rows={2} />
-        <button className="btn primary" disabled={busy || !q.trim()}>Send</button>
+        <button className="btn primary" disabled={busy || !q.trim() || live === false}>Send</button>
       </form>
     </div>
   );

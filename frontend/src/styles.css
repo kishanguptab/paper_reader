@@ -276,3 +276,5 @@ td { padding: 10px 8px; border-bottom: 1px solid var(--line-2); vertical-align: 
   .para, .hero-grid, .two, .defense-grid { grid-template-columns: 1fr; }
 }
 .front-line { font: 14px var(--serif); color: var(--muted); padding: 2px 18px; }
+.demo-note { background: var(--accent-soft); border: 1px solid #c7d2fe; border-radius: var(--radius); padding: 12px 16px; font-size: 13.5px; line-height: 1.6; color: var(--ink-2); max-width: 880px; margin: 10px 0 4px; }
+a.pill:hover { text-decoration: none; background: var(--accent-soft); color: var(--accent); }

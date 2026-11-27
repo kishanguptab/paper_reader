@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { NavLink, Route, Routes, useNavigate } from "react-router-dom";
-import { api, PaperSummary } from "./api";
+import { api, DEMO, PaperSummary } from "./api";
 import Library from "./pages/Library";
 import PaperPage from "./pages/Paper";
 import GraphPage from "./pages/GraphPage";
@@ -35,6 +35,7 @@ export default function App() {
 
   useEffect(() => {
     refresh().catch(() => {});
+    if (DEMO) return;
     const t = setInterval(() => refresh().catch(() => {}), 4000);
     return () => clearInterval(t);
   }, [refresh]);
@@ -61,7 +62,8 @@ export default function App() {
             <NavLink to="/defense">Defense prep</NavLink>
           </nav>
           <div className="spacer" />
-          {status && (
+          {DEMO && <a className="pill" href="https://github.com/kishanguptab/paper_reader" target="_blank" rel="noreferrer">Live demo · code on GitHub ↗</a>}
+          {status && !DEMO && (
             <div className="meter" title="Claude API spend vs. budget cap (set PAPERLENS_BUDGET_USD)">
               <span>${status.spent.toFixed(2)}</span>
               <div className="bar"><div style={{ width: `${Math.min(100, (100 * status.spent) / status.budget)}%` }} /></div>
