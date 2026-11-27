@@ -1,0 +1,10 @@
+anthropic>=0.75
+fastapi>=0.110
+uvicorn[standard]>=0.29
+python-multipart>=0.0.9
+pymupdf>=1.24
+rank-bm25>=0.2.2
+pydantic>=2.6
+# tests
+pytest>=8
+reportlab>=4

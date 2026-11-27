@@ -1,0 +1,39 @@
+// Eval questions. "paper" is a substring of the source paper's title. answerable=false are trap questions the library cannot answer.
+{"question": "What is the definition of equalized odds and how does it differ from demographic parity?", "paper": "Equality of Opportunity in Supervised Learning", "answerable": true}
+{"question": "How is the equal opportunity criterion applied to the FICO credit score case study?", "paper": "Equality of Opportunity in Supervised Learning", "answerable": true}
+{"question": "How does Fair-GPTQ modify the GPTQ quantization objective to reduce bias?", "paper": "Fair-GPTQ", "answerable": true}
+{"question": "What does the hyperparameter alpha control in the bias-aware quantization penalty?", "paper": "Fair-GPTQ", "answerable": true}
+{"question": "Does knowledge distillation or pruning reduce toxicity and bias in GPT-2 language models?", "paper": "Can Model Compression Improve NLP Fairness", "answerable": true}
+{"question": "Do intrinsic bias metrics such as WEAT correlate with extrinsic application bias in downstream tasks?", "paper": "Intrinsic Bias Metrics Do Not Correlate", "answerable": true}
+{"question": "How does iterative nullspace projection remove protected attribute information from representations?", "paper": "Null It Out", "answerable": true}
+{"question": "What is the word embedding analogy man is to computer programmer as woman is to homemaker and how is hard debiasing performed?", "paper": "Man is to Computer Programmer", "answerable": true}
+{"question": "Why do debiasing methods only cover up gender bias in word embeddings rather than removing it?", "paper": "Lipstick on a Pig", "answerable": true}
+{"question": "What is the Word Embedding Association Test and what human-like biases did it find in language corpora?", "paper": "Semantics derived automatically", "answerable": true}
+{"question": "How is the StereoSet context association test and its intrasentence and intersentence tasks designed?", "paper": "StereoSet", "answerable": true}
+{"question": "How does CrowS-Pairs measure social bias in masked language models using sentence pairs?", "paper": "CrowS-Pairs", "answerable": true}
+{"question": "What ambiguous and disambiguated contexts does the BBQ bias benchmark for question answering use?", "paper": "BBQ", "answerable": true}
+{"question": "What domains and metrics does BOLD use to measure bias in open-ended language generation?", "paper": "BOLD", "answerable": true}
+{"question": "What pitfalls in fairness benchmark datasets are identified using the Norwegian salmon example?", "paper": "Stereotyping Norwegian Salmon", "answerable": true}
+{"question": "What does pruning cause compressed deep neural networks to forget, and what are pruning identified exemplars?", "paper": "What Do Compressed Deep Neural Networks Forget", "answerable": true}
+{"question": "How do quantized face recognition models decompress race biases?", "paper": "Compressed Models Decompress Race Biases", "answerable": true}
+{"question": "What is the inherent trade-off between calibration and balance for the positive and negative class in risk scores?", "paper": "Inherent Trade-Offs in the Fair Determination", "answerable": true}
+{"question": "How does the delayed impact of fair machine learning affect outcomes like credit scores over time?", "paper": "Delayed Impact of Fair Machine Learning", "answerable": true}
+{"question": "How does FairGRAPE perform fairness-aware gradient pruning for face attribute classification?", "paper": "FairGRAPE", "answerable": true}
+{"question": "How does uncertainty drive social bias changes when large language models are quantized?", "paper": "Uncertainty Drives Social Bias Changes", "answerable": true}
+{"question": "How does weight pruning amplify bias in compressed LLMs for edge AI?", "paper": "Weight Pruning Amplifies Bias", "answerable": true}
+{"question": "Can fairness be achieved without demographics through knowledge distillation?", "paper": "Fairness without Demographics", "answerable": true}
+{"question": "What does amnesic probing reveal by removing properties with amnesic counterfactuals?", "paper": "Amnesic Probing", "answerable": true}
+{"question": "What does alignment reduce in expressed versus encoded gender bias?", "paper": "Alignment Reduces Expressed but Not Encoded", "answerable": true}
+{"question": "How do fairness-aware mixed-precision quantization methods treat medical image classification?", "paper": "FairQuant", "answerable": true}
+{"question": "What quantum annealing hardware did the authors use to train the photonic transformer?", "paper": "", "answerable": false}
+{"question": "Which paper reports protein folding accuracy on the CASP14 benchmark with AlphaFold?", "paper": "", "answerable": false}
+{"question": "What was the carbon price per ton assumed in the climate policy simulations?", "paper": "", "answerable": false}
+{"question": "How many patients were enrolled in the randomized clinical trial of the vaccine?", "paper": "", "answerable": false}
+{"question": "What is the recommended dosage of ibuprofen reported in the pharmacology results?", "paper": "", "answerable": false}
+{"question": "Which cryptocurrency exchange order book data was used to train the trading agent?", "paper": "", "answerable": false}
+{"question": "What soil moisture sensors were deployed across the agricultural field sites?", "paper": "", "answerable": false}
+{"question": "Which galaxy cluster lensing survey provided the dark matter maps?", "paper": "", "answerable": false}
+{"question": "How does quantization to 1-bit affect gender bias in Llama 4 mixture of experts models?", "paper": "", "answerable": false, "hard": true}
+{"question": "What bias did the authors find when pruning wav2vec speech models for Swahili speakers?", "paper": "", "answerable": false, "hard": true}
+{"question": "How does federated learning with knowledge distillation affect fairness in stable diffusion image generation?", "paper": "", "answerable": false, "hard": true}
+{"question": "Which paper measures racial bias in compressed chest x-ray classifiers trained with bitsandbytes?", "paper": "", "answerable": false, "hard": true}
